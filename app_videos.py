@@ -10,7 +10,7 @@ from tqdm import tqdm
 random.seed()  # Initialize with system time
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INPUT_DIR = os.path.join(BASE_DIR, "input")
-OVERLAY_DIR = os.path.join(INPUT_DIR, "overlay")
+VIDEOS_DIR = os.path.join(INPUT_DIR, "videos")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -21,66 +21,10 @@ TEMP_FILES = []
 CURRENT_PROCESS = None
 
 # Modern waveform style presets
+# Modern waveform style presets - 15 Bar Styles
 WAVEFORM_PRESETS = [
-    # Circular presets
     {
-        "name": "Cyan Radial Pulse",
-        "color": "0x00FFFF",
-        "mode": "line",
-        "scale": "sqrt",
-        "split_channels": False,
-        "thickness": 8,
-        "glow": True,
-        "position": "bottom",
-        "type": "circular"
-    },
-    {
-        "name": "Magenta Circle Wave",
-        "color": "0xFF00FF",
-        "mode": "line",
-        "scale": "sqrt",
-        "split_channels": False,
-        "thickness": 10,
-        "glow": True,
-        "position": "bottom",
-        "type": "circular"
-    },
-    {
-        "name": "Green Frequency Ring",
-        "color": "0x39FF14",
-        "mode": "line",
-        "scale": "lin",
-        "split_channels": False,
-        "thickness": 6,
-        "glow": True,
-        "position": "bottom",
-        "type": "circular"
-    },
-    {
-        "name": "Orange Spectrum Blast",
-        "color": "0xFF4500",
-        "mode": "line",
-        "scale": "log",
-        "split_channels": False,
-        "thickness": 8,
-        "glow": True,
-        "position": "bottom",
-        "type": "circular"
-    },
-    {
-        "name": "Purple Frequency Circle",
-        "color": "0x9D00FF",
-        "mode": "line",
-        "scale": "cbrt",
-        "split_channels": False,
-        "thickness": 12,
-        "glow": True,
-        "position": "bottom",
-        "type": "circular"
-    },
-    # Bar presets
-    {
-        "name": "Cyan Frequency Bars",
+        "name": "Electric Blue Bars",
         "color": "0x00FFFF",
         "mode": "bar",
         "scale": "sqrt",
@@ -92,7 +36,7 @@ WAVEFORM_PRESETS = [
         "type": "bars"
     },
     {
-        "name": "Hot Pink Bar Graph",
+        "name": "Neon Pink Equalizer",
         "color": "0xFF1493",
         "mode": "bar",
         "scale": "log",
@@ -104,7 +48,7 @@ WAVEFORM_PRESETS = [
         "type": "bars"
     },
     {
-        "name": "Electric Green Equalizer",
+        "name": "Lime Green Spectrum",
         "color": "0x39FF14",
         "mode": "bar",
         "scale": "sqrt",
@@ -115,28 +59,149 @@ WAVEFORM_PRESETS = [
         "position": "bottom",
         "type": "bars"
     },
-    # Vector presets
     {
-        "name": "Cyan Lissajous Vector",
-        "color": "0x00FFFF",
-        "mode": "lissajous_xy",
-        "scale": "sqrt",
+        "name": "Blazing Orange Bars",
+        "color": "0xFF4500",
+        "mode": "bar",
+        "scale": "cbrt",
         "split_channels": False,
-        "thickness": 4,
+        "thickness": 12,
+        "win_size": 1024,
         "glow": True,
         "position": "bottom",
-        "type": "vector"
+        "type": "bars"
     },
     {
-        "name": "Green Polar Scope",
-        "color": "0x39FF14",
-        "mode": "polar",
-        "scale": "lin",
+        "name": "Royal Purple Waves",
+        "color": "0x9D00FF",
+        "mode": "bar",
+        "scale": "log",
         "split_channels": False,
-        "thickness": 6,
+        "thickness": 9,
+        "win_size": 768,
         "glow": True,
         "position": "bottom",
-        "type": "vector"
+        "type": "bars"
+    },
+    {
+        "name": "Golden Frequency Bars",
+        "color": "0xFFD700",
+        "mode": "bar",
+        "scale": "sqrt",
+        "split_channels": False,
+        "thickness": 7,
+        "win_size": 1536,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Crimson Red Spectrum",
+        "color": "0xDC143C",
+        "mode": "bar",
+        "scale": "lin",
+        "split_channels": False,
+        "thickness": 11,
+        "win_size": 512,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Turquoise Dream Bars",
+        "color": "0x40E0D0",
+        "mode": "bar",
+        "scale": "sqrt",
+        "split_channels": False,
+        "thickness": 8,
+        "win_size": 1024,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Violet Storm Equalizer",
+        "color": "0x8A2BE2",
+        "mode": "bar",
+        "scale": "log",
+        "split_channels": False,
+        "thickness": 10,
+        "win_size": 896,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Coral Reef Bars",
+        "color": "0xFF7F50",
+        "mode": "bar",
+        "scale": "cbrt",
+        "split_channels": False,
+        "thickness": 9,
+        "win_size": 1280,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Aqua Marine Spectrum",
+        "color": "0x00CED1",
+        "mode": "bar",
+        "scale": "sqrt",
+        "split_channels": False,
+        "thickness": 7,
+        "win_size": 2048,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Hot Magenta Bars",
+        "color": "0xFF00FF",
+        "mode": "bar",
+        "scale": "log",
+        "split_channels": False,
+        "thickness": 12,
+        "win_size": 640,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Chartreuse Pulse",
+        "color": "0x7FFF00",
+        "mode": "bar",
+        "scale": "sqrt",
+        "split_channels": False,
+        "thickness": 8,
+        "win_size": 1024,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Sapphire Blue Equalizer",
+        "color": "0x0F52BA",
+        "mode": "bar",
+        "scale": "cbrt",
+        "split_channels": False,
+        "thickness": 11,
+        "win_size": 1152,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
+    },
+    {
+        "name": "Ruby Red Spectrum",
+        "color": "0xE0115F",
+        "mode": "bar",
+        "scale": "log",
+        "split_channels": False,
+        "thickness": 9,
+        "win_size": 768,
+        "glow": True,
+        "position": "bottom",
+        "type": "bars"
     }
 ]
 
@@ -269,51 +334,29 @@ def run_with_progress(cmd, desc=None, duration=None):
     CURRENT_PROCESS = None
 
     if pbar:
-        pbar.n = 100
-        pbar.refresh()
+        if returncode == 0:
+            pbar.n = 100
+            pbar.refresh()
         pbar.close()
 
     if returncode != 0:
-        print(f"\n[!] {desc or 'Error'}")
-        error_text = ''.join(stderr_output[-20:])  # Last 20 lines
-        print(f"Error output:\n{error_text}")
+        print(f"\n[!] FFmpeg error (exit code {returncode}):")
+        print("".join(stderr_output[-20:]))
         return False
 
     return True
 
 
-def run(cmd, desc=None):
-    """Execute command without progress (for quick operations)"""
-    global CURRENT_PROCESS
-
-    if IS_WINDOWS:
-        CURRENT_PROCESS = subprocess.run(cmd, capture_output=True, text=True,
-                                         creationflags=subprocess.CREATE_NO_WINDOW if IS_WINDOWS else 0)
-    else:
-        import shlex
-        cmd_str = " ".join(shlex.quote(str(c)) for c in cmd)
-        CURRENT_PROCESS = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)
-
-    returncode = CURRENT_PROCESS.returncode
-    stderr = CURRENT_PROCESS.stderr
-    CURRENT_PROCESS = None
-
-    if returncode != 0:
-        print(f"\n[!] {desc or 'Error'}")
-        print(f"Error output: {stderr[-800:]}")
-    return returncode == 0
-
-
 def get_duration(path):
-    """Return audio length in seconds"""
-    cmd = [
-        "ffprobe", "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        path
-    ]
+    """Get duration of media file in seconds"""
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        result = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "default=noprint_wrappers=1:nokey=1", path],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
         duration = float(result.stdout.strip())
         return duration if duration > 0 else 30.0
     except (subprocess.CalledProcessError, ValueError) as e:
@@ -321,22 +364,26 @@ def get_duration(path):
         return 30.0
 
 
-def get_random_overlay():
-    """Get random overlay video from overlay folder"""
-    overlay_extensions = ('.mp4', '.mov', '.avi', '.mkv', '.webm')
+def get_random_video():
+    """Get random video from videos folder"""
+    video_extensions = ('.mp4', '.mov', '.avi', '.mkv', '.webm')
 
     try:
-        if not os.path.exists(OVERLAY_DIR):
+        if not os.path.exists(VIDEOS_DIR):
+            print(f"[!] Videos directory not found: {VIDEOS_DIR}")
+            print(f"[!] Please create '{VIDEOS_DIR}' and add video files")
             return None
 
-        overlays = [f for f in os.listdir(OVERLAY_DIR)
-                    if f.lower().endswith(overlay_extensions)]
+        videos = [f for f in os.listdir(VIDEOS_DIR)
+                  if f.lower().endswith(video_extensions)]
 
-        if not overlays:
+        if not videos:
+            print(f"[!] No videos found in {VIDEOS_DIR}")
             return None
 
-        return os.path.join(OVERLAY_DIR, random.choice(overlays))
-    except Exception:
+        return os.path.join(VIDEOS_DIR, random.choice(videos))
+    except Exception as e:
+        print(f"[!] Error accessing videos folder: {e}")
         return None
 
 
@@ -394,22 +441,26 @@ def build_waveform_filter(preset, wave_width, wave_height):
     return filter_chain
 
 
-def make_visualizer(image_path, audio_path, output_path):
-    """Generate audio visualizer video from image and audio"""
+def make_visualizer(audio_path, output_path):
+    """Generate audio visualizer video from random video and audio"""
     preset = random.choice(WAVEFORM_PRESETS)
-    overlay_path = get_random_overlay()
+    video_path = get_random_video()
 
-    wave_width = 1080
+    if not video_path:
+        print("[!] No video available, skipping")
+        return False
+
+    wave_width = 1920
     if preset["type"] == "circular":
         wave_height = 1080
     elif preset["type"] == "bars":
-        wave_height = 1000
+        wave_height = 800
     elif preset["type"] == "vector":
         wave_height = 300
     else:
         wave_height = 300
 
-    width = 1080
+    width = 1920
     height = 1080
     fps = 30
     duration = get_duration(audio_path)
@@ -419,8 +470,7 @@ def make_visualizer(image_path, audio_path, output_path):
 
     print(f"\n📝 Processing: {os.path.basename(audio_path)} ({duration:.1f}s)")
     print(f"   🎨 Style: {preset['name']} ({preset['type']})")
-    if overlay_path:
-        print(f"   🎬 Overlay: {os.path.basename(overlay_path)}")
+    print(f"   🎬 Video: {os.path.basename(video_path)}")
 
     # Step 1: Normalize audio
     if not run_with_progress([
@@ -430,11 +480,10 @@ def make_visualizer(image_path, audio_path, output_path):
     ], "  ├─ Converting audio", duration):
         return False
 
-    # Step 2: Build filter graph
-    input_count = 2
-    audio_input_index = 1
-
+    # Step 2: Build filter graph with looping video
     filter_parts = []
+
+    # Scale and loop the video to match audio duration
     filter_parts.append(
         f"[0:v]scale={width}:{height}:force_original_aspect_ratio=increase,"
         f"crop={width}:{height},setsar=1[bg]"
@@ -442,35 +491,17 @@ def make_visualizer(image_path, audio_path, output_path):
 
     current_layer = "[bg]"
 
-    if overlay_path:
-        input_count += 1
-        overlay_input_index = input_count - 1
-        overlay_opacity = 0.7
-
-        filter_parts.append(
-            f"[{overlay_input_index}:v]scale={width}:{height}:force_original_aspect_ratio=increase,"
-            f"crop={width}:{height},setsar=1,"
-            f"format=yuva420p[overlay_scaled]"
-        )
-        filter_parts.append(f"[overlay_scaled]chromakey=black:0.01:0.05[overlay_keyed]")
-
-        if overlay_opacity < 1.0:
-            filter_parts.append(f"[overlay_keyed]colorchannelmixer=aa={overlay_opacity}[overlay_loop]")
-        else:
-            filter_parts.append(f"[overlay_keyed]null[overlay_loop]")
-
-        filter_parts.append(f"{current_layer}[overlay_loop]overlay=0:0:shortest=1:format=auto[bg_with_overlay]")
-        current_layer = "[bg_with_overlay]"
-
+    # Build waveform filter
     if preset["type"] in ["circular", "bars", "vector"]:
         waveform_height = wave_height
     else:
         waveform_height = wave_height // 2
 
     waveform_filter = build_waveform_filter(preset, wave_width, waveform_height)
-    waveform_filter = waveform_filter.replace("[AUDIO_INPUT]", f"[{audio_input_index}:a]")
+    waveform_filter = waveform_filter.replace("[AUDIO_INPUT]", "[1:a]")
     filter_parts.append(waveform_filter)
 
+    # Position waveform
     if preset["position"] == "center":
         overlay_pos = f"(W-w)/2:(H-h)/2"
     else:
@@ -480,16 +511,16 @@ def make_visualizer(image_path, audio_path, output_path):
 
     filter_graph = ";".join(filter_parts)
 
-    cmd = ["ffmpeg", "-y", "-loop", "1", "-i", image_path, "-i", tmp_audio]
-
-    if overlay_path:
-        cmd.extend(["-stream_loop", "-1", "-i", overlay_path])
-
-    cmd.extend([
+    # Build FFmpeg command with looping video
+    cmd = [
+        "ffmpeg", "-y",
+        "-stream_loop", "-1",  # Loop video indefinitely
+        "-i", video_path,
+        "-i", tmp_audio,
         "-filter_complex", filter_graph,
         "-map", "[v]",
-        "-map", f"{audio_input_index}:a",
-        "-t", f"{duration:.2f}",
+        "-map", "1:a",
+        "-t", f"{duration:.2f}",  # Cut to audio duration
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "23",
@@ -499,7 +530,7 @@ def make_visualizer(image_path, audio_path, output_path):
         "-b:a", "192k",
         "-movflags", "+faststart",
         output_path
-    ])
+    ]
 
     if not run_with_progress(cmd, "  └─ Composing final video", duration):
         return False
@@ -519,7 +550,6 @@ def make_visualizer(image_path, audio_path, output_path):
 def batch_generate():
     """Process all audio files in input directory"""
     audio_extensions = ('.wav', '.mp3', '.m4a', '.flac', '.ogg', '.aac')
-    image_extensions = ('.png', '.jpg', '.jpeg', '.bmp', '.tiff', '.webp')
 
     try:
         files = [f for f in os.listdir(INPUT_DIR)
@@ -534,6 +564,12 @@ def batch_generate():
         print(f"[!] Supported formats: {', '.join(audio_extensions)}")
         return
 
+    # Check if videos folder exists
+    if not os.path.exists(VIDEOS_DIR):
+        print(f"[!] Videos directory not found: {VIDEOS_DIR}")
+        print(f"[!] Please create 'input/videos' folder and add video files")
+        return
+
     print(f"[*] Found {len(files)} audio file(s) to process\n")
 
     success_count = 0
@@ -542,23 +578,11 @@ def batch_generate():
         print(f"File {idx}/{len(files)}")
 
         name, _ = os.path.splitext(audio_file)
-
-        img_path = None
-        for ext in image_extensions:
-            potential_path = os.path.join(INPUT_DIR, f"{name}{ext}")
-            if os.path.exists(potential_path):
-                img_path = potential_path
-                break
-
-        if not img_path:
-            print(f"[!] Missing image for '{audio_file}', skipping\n")
-            continue
-
         audio_path = os.path.join(INPUT_DIR, audio_file)
         output_path = os.path.join(OUTPUT_DIR, f"{name}.mp4")
 
         try:
-            if make_visualizer(img_path, audio_path, output_path):
+            if make_visualizer(audio_path, output_path):
                 success_count += 1
         except KeyboardInterrupt:
             print("\n[!] Interrupted by user")
@@ -569,7 +593,7 @@ def batch_generate():
 
 
 if __name__ == "__main__":
-    print("🎵 Music Visualizer Generator")
+    print("🎵 Music Visualizer Generator (Video Background)")
     print("=" * 60)
 
     # Clean up any leftover temp files from previous runs
