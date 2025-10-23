@@ -19,8 +19,142 @@ IS_WINDOWS = sys.platform.startswith('win')
 # Track temp files for cleanup
 TEMP_FILES = []
 CURRENT_PROCESS = None
+USED_VIDEOS = []
 
-# Modern waveform style presets
+# Text style presets for ImageMagick
+TEXT_STYLE_PRESETS = [
+    {
+        "name": "Neon Cyan Glow",
+        "fill": "cyan",
+        "stroke": "#0066CC",
+        "strokewidth": 4,
+        "shadow_color": "cyan",
+        "shadow_opacity": 80,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    },
+    {
+        "name": "Hot Pink Neon",
+        "fill": "#FF1493",
+        "stroke": "#8B0045",
+        "strokewidth": 5,
+        "shadow_color": "#FF1493",
+        "shadow_opacity": 85,
+        "shadow_sigma": 6,
+        "brightness": "light"
+    },
+    {
+        "name": "Electric Green",
+        "fill": "#39FF14",
+        "stroke": "#0D5302",
+        "strokewidth": 4,
+        "shadow_color": "#39FF14",
+        "shadow_opacity": 80,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    },
+    {
+        "name": "Golden Shine",
+        "fill": "#FFD700",
+        "stroke": "#8B6914",
+        "strokewidth": 6,
+        "shadow_color": "#FFD700",
+        "shadow_opacity": 75,
+        "shadow_sigma": 4,
+        "brightness": "light"
+    },
+    {
+        "name": "Purple Haze",
+        "fill": "#9D00FF",
+        "stroke": "#4B0082",
+        "strokewidth": 5,
+        "shadow_color": "#9D00FF",
+        "shadow_opacity": 80,
+        "shadow_sigma": 6,
+        "brightness": "medium"
+    },
+    {
+        "name": "Fiery Orange",
+        "fill": "#FF4500",
+        "stroke": "#8B2500",
+        "strokewidth": 4,
+        "shadow_color": "#FF4500",
+        "shadow_opacity": 85,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    },
+    {
+        "name": "Ice Blue",
+        "fill": "#00CED1",
+        "stroke": "#003D40",
+        "strokewidth": 5,
+        "shadow_color": "#00CED1",
+        "shadow_opacity": 80,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    },
+    {
+        "name": "Magenta Burst",
+        "fill": "#FF00FF",
+        "stroke": "#8B008B",
+        "strokewidth": 6,
+        "shadow_color": "#FF00FF",
+        "shadow_opacity": 85,
+        "shadow_sigma": 6,
+        "brightness": "light"
+    },
+    {
+        "name": "Lime Punch",
+        "fill": "#7FFF00",
+        "stroke": "#2E5902",
+        "strokewidth": 4,
+        "shadow_color": "#7FFF00",
+        "shadow_opacity": 80,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    },
+    {
+        "name": "Ruby Red",
+        "fill": "#E0115F",
+        "stroke": "#8B0A3B",
+        "strokewidth": 5,
+        "shadow_color": "#E0115F",
+        "shadow_opacity": 85,
+        "shadow_sigma": 6,
+        "brightness": "medium"
+    },
+    {
+        "name": "Pure White Glow",
+        "fill": "white",
+        "stroke": "#CCCCCC",
+        "strokewidth": 5,
+        "shadow_color": "white",
+        "shadow_opacity": 90,
+        "shadow_sigma": 6,
+        "brightness": "light"
+    },
+    {
+        "name": "Deep Black Shadow",
+        "fill": "black",
+        "stroke": "#333333",
+        "strokewidth": 6,
+        "shadow_color": "white",
+        "shadow_opacity": 95,
+        "shadow_sigma": 8,
+        "brightness": "dark"
+    },
+    {
+        "name": "Silver Chrome",
+        "fill": "#C0C0C0",
+        "stroke": "#404040",
+        "strokewidth": 5,
+        "shadow_color": "#E0E0E0",
+        "shadow_opacity": 85,
+        "shadow_sigma": 5,
+        "brightness": "light"
+    }
+]
+
 # Modern waveform style presets - 15 Bar Styles
 WAVEFORM_PRESETS = [
     {
@@ -30,7 +164,7 @@ WAVEFORM_PRESETS = [
         "scale": "sqrt",
         "split_channels": False,
         "thickness": 8,
-        "win_size": 1024,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -42,7 +176,7 @@ WAVEFORM_PRESETS = [
         "scale": "log",
         "split_channels": False,
         "thickness": 10,
-        "win_size": 512,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -66,7 +200,7 @@ WAVEFORM_PRESETS = [
         "scale": "cbrt",
         "split_channels": False,
         "thickness": 12,
-        "win_size": 1024,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -78,7 +212,7 @@ WAVEFORM_PRESETS = [
         "scale": "log",
         "split_channels": False,
         "thickness": 9,
-        "win_size": 768,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -90,7 +224,7 @@ WAVEFORM_PRESETS = [
         "scale": "sqrt",
         "split_channels": False,
         "thickness": 7,
-        "win_size": 1536,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -102,7 +236,7 @@ WAVEFORM_PRESETS = [
         "scale": "lin",
         "split_channels": False,
         "thickness": 11,
-        "win_size": 512,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -114,7 +248,7 @@ WAVEFORM_PRESETS = [
         "scale": "sqrt",
         "split_channels": False,
         "thickness": 8,
-        "win_size": 1024,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -126,7 +260,7 @@ WAVEFORM_PRESETS = [
         "scale": "log",
         "split_channels": False,
         "thickness": 10,
-        "win_size": 896,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -138,7 +272,7 @@ WAVEFORM_PRESETS = [
         "scale": "cbrt",
         "split_channels": False,
         "thickness": 9,
-        "win_size": 1280,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -162,7 +296,7 @@ WAVEFORM_PRESETS = [
         "scale": "log",
         "split_channels": False,
         "thickness": 12,
-        "win_size": 640,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -174,7 +308,7 @@ WAVEFORM_PRESETS = [
         "scale": "sqrt",
         "split_channels": False,
         "thickness": 8,
-        "win_size": 1024,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -186,7 +320,7 @@ WAVEFORM_PRESETS = [
         "scale": "cbrt",
         "split_channels": False,
         "thickness": 11,
-        "win_size": 1152,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -198,7 +332,7 @@ WAVEFORM_PRESETS = [
         "scale": "log",
         "split_channels": False,
         "thickness": 9,
-        "win_size": 768,
+        "win_size": 2048,
         "glow": True,
         "position": "bottom",
         "type": "bars"
@@ -228,24 +362,23 @@ def cleanup_all_temp_files():
             if os.path.exists(f):
                 os.remove(f)
         except Exception as e:
-            pass  # File might be locked, will be overwritten next run
+            pass
 
 
 def cleanup_startup_temp_files():
     """Remove any leftover temp files from previous runs"""
-    temp_patterns = ['_tmp_audio.wav', '_tmp_*.wav', '_tmp_*.mp4']
+    temp_patterns = ['_tmp_audio.wav', '_tmp_*.wav', '_tmp_*.mp4', '_tmp_*.png']
 
     cleaned = 0
     for pattern in temp_patterns:
         if '*' in pattern:
-            # Handle wildcards
             import glob
             for temp_file in glob.glob(os.path.join(OUTPUT_DIR, pattern)):
                 try:
                     os.remove(temp_file)
                     cleaned += 1
                 except:
-                    pass  # File might be locked, FFmpeg will overwrite
+                    pass
         else:
             temp_file = os.path.join(OUTPUT_DIR, pattern)
             if os.path.exists(temp_file):
@@ -296,7 +429,6 @@ def run_with_progress(cmd, desc=None, duration=None):
             universal_newlines=True
         )
 
-    # Create progress bar if we have duration info
     pbar = None
     if duration and desc:
         pbar = tqdm(total=100, desc=desc, unit="%", leave=False,
@@ -305,7 +437,6 @@ def run_with_progress(cmd, desc=None, duration=None):
     stderr_output = []
     time_pattern = re.compile(r'time=(\d+):(\d+):(\d+\.\d+)')
 
-    # Read stderr line by line
     try:
         while True:
             line = CURRENT_PROCESS.stderr.readline()
@@ -313,7 +444,6 @@ def run_with_progress(cmd, desc=None, duration=None):
                 break
             stderr_output.append(line)
 
-            # Parse progress from FFmpeg output
             if pbar and duration:
                 match = time_pattern.search(line)
                 if match:
@@ -340,7 +470,7 @@ def run_with_progress(cmd, desc=None, duration=None):
         pbar.close()
 
     if returncode != 0:
-        print(f"\n[!] FFmpeg error (exit code {returncode}):")
+        print(f"\n[!] Command error (exit code {returncode}):")
         print("".join(stderr_output[-20:]))
         return False
 
@@ -364,8 +494,61 @@ def get_duration(path):
         return 30.0
 
 
+def get_video_brightness(video_path):
+    """Analyze video to determine if it's predominantly dark or light"""
+    try:
+        cmd = [
+            "ffmpeg", "-i", video_path,
+            "-vf", "select=eq(n\\,50),signalstats",
+            "-f", "null", "-"
+        ]
+
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        output = result.stderr
+
+        import re
+        match = re.search(r'lavfi\.signalstats\.YAVG=(\d+\.?\d*)', output)
+
+        if match:
+            avg_luminance = float(match.group(1))
+            if avg_luminance < 100:
+                return "dark"
+            elif avg_luminance > 155:
+                return "light"
+            else:
+                return "medium"
+
+        return "medium"
+
+    except Exception as e:
+        return "medium"
+
+
+def pick_contrasting_text_style(video_path):
+    """Pick a text style that contrasts with the video's brightness"""
+    brightness = get_video_brightness(video_path)
+
+    if brightness == "dark":
+        suitable_styles = [s for s in TEXT_STYLE_PRESETS if s["brightness"] == "light"]
+    elif brightness == "light":
+        suitable_styles = [s for s in TEXT_STYLE_PRESETS if s["brightness"] in ["dark", "medium"]]
+        if not suitable_styles:
+            suitable_styles = TEXT_STYLE_PRESETS
+    else:
+        suitable_styles = TEXT_STYLE_PRESETS
+
+    return random.choice(suitable_styles)
+
+
 def get_random_video():
-    """Get random video from videos folder"""
+    """Get random video from videos folder, avoiding repeats"""
+    global USED_VIDEOS
     video_extensions = ('.mp4', '.mov', '.avi', '.mkv', '.webm')
 
     try:
@@ -381,10 +564,96 @@ def get_random_video():
             print(f"[!] No videos found in {VIDEOS_DIR}")
             return None
 
-        return os.path.join(VIDEOS_DIR, random.choice(videos))
+        available = [v for v in videos if v not in USED_VIDEOS]
+
+        if not available:
+            USED_VIDEOS.clear()
+            available = videos
+
+        chosen = random.choice(available)
+        USED_VIDEOS.append(chosen)
+
+        return os.path.join(VIDEOS_DIR, chosen)
     except Exception as e:
         print(f"[!] Error accessing videos folder: {e}")
         return None
+
+
+def find_imagemagick():
+    """Find ImageMagick executable on the system"""
+    import shutil
+
+    commands = ["magick", "convert", "magick.exe", "convert.exe"]
+
+    for cmd in commands:
+        if shutil.which(cmd):
+            return cmd
+
+    if IS_WINDOWS:
+        import glob
+        possible_paths = [
+            r"C:\Program Files\ImageMagick-*\magick.exe",
+            r"C:\Program Files (x86)\ImageMagick-*\magick.exe",
+            r"C:\ImageMagick\magick.exe",
+        ]
+
+        for pattern in possible_paths:
+            matches = glob.glob(pattern)
+            if matches:
+                return matches[0]
+
+    return None
+
+
+def create_text_overlay(text, style_preset, output_path, width=1920, height=1080):
+    """Create stylized text overlay using ImageMagick"""
+    try:
+        magick_cmd = find_imagemagick()
+
+        if not magick_cmd:
+            print("[!] ImageMagick not found. Please install it:")
+            print("    Windows: Download from https://imagemagick.org/")
+            print("    Make sure to check 'Add to PATH' during installation")
+            print("    Then restart your terminal/IDE")
+            return False
+
+        cmd = [
+            magick_cmd,
+            "-size", f"{width}x{height}",
+            "xc:none",
+            "-font", "Arial-Bold",
+            "-pointsize", "120",
+            "-fill", style_preset["fill"],
+            "-stroke", style_preset["stroke"],
+            "-strokewidth", str(style_preset["strokewidth"]),
+            "-gravity", "center",
+            "-annotate", "+0+0", text,
+            "(",
+            "+clone",
+            "-background", style_preset["shadow_color"],
+            "-shadow", f"{style_preset['shadow_opacity']}x{style_preset['shadow_sigma']}+0+0",
+            ")",
+            "+swap",
+            "-background", "none",
+            "-layers", "merge",
+            "+repage",
+            output_path
+        ]
+
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
+        if result.returncode != 0:
+            print(f"[!] ImageMagick error: {result.stderr}")
+            return False
+
+        return True
+
+    except subprocess.TimeoutExpired:
+        print("[!] ImageMagick timed out")
+        return False
+    except Exception as e:
+        print(f"[!] Error creating text overlay: {e}")
+        return False
 
 
 def build_waveform_filter(preset, wave_width, wave_height):
@@ -442,13 +711,17 @@ def build_waveform_filter(preset, wave_width, wave_height):
 
 
 def make_visualizer(audio_path, output_path):
-    """Generate audio visualizer video from random video and audio"""
+    """Generate audio visualizer video from random video and audio with stylized text"""
     preset = random.choice(WAVEFORM_PRESETS)
     video_path = get_random_video()
 
     if not video_path:
         print("[!] No video available, skipping")
         return False
+
+    text_style = pick_contrasting_text_style(video_path)
+
+    song_name = os.path.splitext(os.path.basename(audio_path))[0]
 
     wave_width = 1920
     if preset["type"] == "circular":
@@ -466,13 +739,19 @@ def make_visualizer(audio_path, output_path):
     duration = get_duration(audio_path)
 
     tmp_audio = os.path.join(OUTPUT_DIR, "_tmp_audio.wav")
-    TEMP_FILES.append(tmp_audio)
+    tmp_text_overlay = os.path.join(OUTPUT_DIR, f"_tmp_text_{os.getpid()}.png")
+    TEMP_FILES.extend([tmp_audio, tmp_text_overlay])
 
-    print(f"\n📝 Processing: {os.path.basename(audio_path)} ({duration:.1f}s)")
-    print(f"   🎨 Style: {preset['name']} ({preset['type']})")
+    print(f"\n📝 Processing: {song_name} ({duration:.1f}s)")
+    print(f"   🎨 Waveform: {preset['name']} ({preset['type']})")
+    print(f"   ✨ Text Style: {text_style['name']}")
     print(f"   🎬 Video: {os.path.basename(video_path)}")
 
-    # Step 1: Normalize audio
+    print("  ├─ Creating text overlay")
+    if not create_text_overlay(song_name, text_style, tmp_text_overlay, width, height):
+        print("[!] Failed to create text overlay, continuing without text...")
+        tmp_text_overlay = None
+
     if not run_with_progress([
         "ffmpeg", "-y", "-i", audio_path,
         "-ac", "2", "-ar", "44100", "-acodec", "pcm_s16le",
@@ -480,47 +759,60 @@ def make_visualizer(audio_path, output_path):
     ], "  ├─ Converting audio", duration):
         return False
 
-    # Step 2: Build filter graph with looping video
     filter_parts = []
+    input_index = 0
 
-    # Scale and loop the video to match audio duration
     filter_parts.append(
-        f"[0:v]scale={width}:{height}:force_original_aspect_ratio=increase,"
+        f"[{input_index}:v]scale={width}:{height}:force_original_aspect_ratio=increase,"
         f"crop={width}:{height},setsar=1[bg]"
     )
+    input_index += 1
 
     current_layer = "[bg]"
 
-    # Build waveform filter
     if preset["type"] in ["circular", "bars", "vector"]:
         waveform_height = wave_height
     else:
         waveform_height = wave_height // 2
 
     waveform_filter = build_waveform_filter(preset, wave_width, waveform_height)
-    waveform_filter = waveform_filter.replace("[AUDIO_INPUT]", "[1:a]")
+    waveform_filter = waveform_filter.replace("[AUDIO_INPUT]", f"[{input_index}:a]")
     filter_parts.append(waveform_filter)
 
-    # Position waveform
     if preset["position"] == "center":
         overlay_pos = f"(W-w)/2:(H-h)/2"
     else:
         overlay_pos = "0:H-h"
 
-    filter_parts.append(f"{current_layer}[wave]overlay={overlay_pos},format=yuv420p[v]")
+    filter_parts.append(f"{current_layer}[wave]overlay={overlay_pos}[v_with_wave]")
+    current_layer = "[v_with_wave]"
+
+    if tmp_text_overlay and os.path.exists(tmp_text_overlay):
+        input_index += 1
+        filter_parts.append(
+            f"[{input_index}:v]format=rgba,colorchannelmixer=aa=0.9[text]"
+        )
+        filter_parts.append(f"{current_layer}[text]overlay=(W-w)/2:(H-h)/2,format=yuv420p[v]")
+    else:
+        filter_parts.append(f"{current_layer}format=yuv420p[v]")
 
     filter_graph = ";".join(filter_parts)
 
-    # Build FFmpeg command with looping video
     cmd = [
         "ffmpeg", "-y",
-        "-stream_loop", "-1",  # Loop video indefinitely
+        "-stream_loop", "-1",
         "-i", video_path,
         "-i", tmp_audio,
+    ]
+
+    if tmp_text_overlay and os.path.exists(tmp_text_overlay):
+        cmd.extend(["-loop", "1", "-i", tmp_text_overlay])
+
+    cmd.extend([
         "-filter_complex", filter_graph,
         "-map", "[v]",
         "-map", "1:a",
-        "-t", f"{duration:.2f}",  # Cut to audio duration
+        "-t", f"{duration:.2f}",
         "-c:v", "libx264",
         "-preset", "medium",
         "-crf", "23",
@@ -530,18 +822,19 @@ def make_visualizer(audio_path, output_path):
         "-b:a", "192k",
         "-movflags", "+faststart",
         output_path
-    ]
+    ])
 
     if not run_with_progress(cmd, "  └─ Composing final video", duration):
         return False
 
-    # Clean up temp file immediately after successful completion
-    try:
-        if os.path.exists(tmp_audio):
-            os.remove(tmp_audio)
-            TEMP_FILES.remove(tmp_audio)
-    except:
-        pass
+    for tmp_file in [tmp_audio, tmp_text_overlay]:
+        try:
+            if tmp_file and os.path.exists(tmp_file):
+                os.remove(tmp_file)
+                if tmp_file in TEMP_FILES:
+                    TEMP_FILES.remove(tmp_file)
+        except:
+            pass
 
     print(f"  ✅ Complete: {os.path.basename(output_path)}")
     return True
@@ -564,7 +857,6 @@ def batch_generate():
         print(f"[!] Supported formats: {', '.join(audio_extensions)}")
         return
 
-    # Check if videos folder exists
     if not os.path.exists(VIDEOS_DIR):
         print(f"[!] Videos directory not found: {VIDEOS_DIR}")
         print(f"[!] Please create 'input/videos' folder and add video files")
@@ -593,10 +885,9 @@ def batch_generate():
 
 
 if __name__ == "__main__":
-    print("🎵 Music Visualizer Generator (Video Background)")
+    print("🎵 Music Visualizer Generator with Stylized Text")
     print("=" * 60)
 
-    # Clean up any leftover temp files from previous runs
     cleanup_startup_temp_files()
 
     try:
